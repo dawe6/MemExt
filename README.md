@@ -1,6 +1,5 @@
 # MemExt
-Rozsireni pameti Sharp MZ-800 na 512kB RAM a 512 kB FLASH
-Obsah
+## Obsah
     • Úvod 
     • Realizace zapojení 
         ◦ Popis zapojení 
@@ -12,7 +11,7 @@ Obsah
         ◦ Programování FLASH mimo MZ800 
         ◦ Obsah paměti FLASH 
 
-Úvod
+## Úvod
 Modul MemExt umožní používat v MZ800 až 1 MB operační paměti. Obsahuje stránkovací systém, který převádí 16-ti bitovou adresu mikroprocesoru Z80 na 20-ti bitovou adresu paměti. 
       Slovníček pojmů:
     • Logická paměť - to je paměť kterou známe jako fyzickou RAM z MZ800 před instalací MemExt. Má velikost 64kB a může mít adresu 0-FFFFh. 
@@ -24,7 +23,7 @@ Modul MemExt umožní používat v MZ800 až 1 MB operační paměti. Obsahuje s
     • Mapování - je mapování pamětí VRAM a PROM pomocí I/O portů 0E0h-0E4h. Mapování je nadřazeno stránkování. Pokud přimapujeme část FLASH budu ji označovat jako PROM, protože do mapované FLASH není možný zápis. Pro programování FLASH je nutné použít stránkování. MemExt rozšiřuje vlastnosti mapování PROM na možnost volit ze dvou 16 kB části FLASH přepínačem MZ700/MZ800. 
 Nastavení stránkovací paměti se provádí zápisem na I/O port E7h, kde se 8 bitů datové sběrnice zapisuje do buňky určené nejvyššími 4-mi bity 16-ti bitové adresní sběrnice, nastavení tedy musí být provedeno instrukcí OUT (C), r kdy vyšší 4 bity registru B určují adresu ve stránkovací paměti. Zapojení neumožňuje stránkovací paměť programově číst. 
 
-Popis zapojení
+## Popis zapojení
     • Adresní dekodér I/O portu E7h - Je tvořen obvody LS138 a LS10 (3 hradla).
 Výstupem je pin 15 obvodu LS138 a nabývá log "0" při zápisu do I/O portu E7h. 
     • Logika módu stránkování / mapování - Sestává pouze z obvodu LS157.
@@ -43,7 +42,7 @@ Vstupem je signál /CAS, který aktivoval původní paměťové čipy 4164 - nyn
     • Paměti FLASH/RAM - Obvody 29F040 a 628512.
 Tady snad jedině že 628512 nemá uspořádané piny jako 29F040 tak jsou adresní vodiče v zapojení poněkud přeházené, ale vzhledem k tomu že je to RAM tak to snad ani nevadí. 
 
-Instalace modulu
+## Instalace modulu
     • Nejprve je třeba si připravit pomocný datový konektor se sedmi vodiči a připájet je podle obrázku mb.jpg na základní desku. Pořadí vodičů na pomocném konektoru (od zadní části MZ800) je:
 A14
 /WR
@@ -56,7 +55,7 @@ A15
     • Teď vyndejte z patice paměť PROM a místo ní vložte modul a připojte pomocný datový konektor. 
     • Mužete zkusit co to udělá, když se to zapne. 
 
-Příklady nastavení stránkování
+## Příklady nastavení stránkování
 Ovládání stránkovacího mechanizmu je velice jednoduché tak jen pár příkladů: 
       Ať logickou paměť 2000-2FFF tvoří stránka 00 (první stránka RAM) 
     • LD BC, 20E7 - B=adresa stránkovací paměti 2, C=port stránkování 
@@ -85,7 +84,7 @@ Představme si, že máme odmapované všechny PROM a SHARP je v módu MZ-800 a 
     • INC A - A=stránka 83 
     • OUT (C), A 
 
-Inicializace stránkování
+## Inicializace stránkování
 Protože HW inicializace stránkování by byla příliš složitá je nutná úprava BIOSu. Následující program nastaví stránkovací paměť takto: logická paměť 0-FFFh bude mít přimapovanou stránku 00, logická paměť 1000-1FFFh bude mít přimapovanou stránku 01, ..., logická paměť F000-FFFFh bude mít přimapovanou stránku 0F.
 0000h
 JP 748h
@@ -127,7 +126,7 @@ smyčka poběží celkem 16x
 JP E800h
 C3 00 E8
 pokračovat na IPL
-Postup při programování FLASH
+## Postup při programování FLASH
 Zadání:
 1. mám v logické paměti na adrese 2000-2FFF něco co chci dostat do FLASH do stránky A3
 2. stránka A3 ve FLASH je buď prázdná, a nebo mě nezajímá co se stane s obsahem stránek A0, A1, A2, A4 - AF
